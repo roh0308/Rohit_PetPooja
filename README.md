@@ -16,9 +16,11 @@
   ->Setup
   Backend:
   npm start
+  
   Backend runs at : http://localhost:3001
   Frontend:
   npm run dev
+  
   Frontend runs at: http://localhost:3000
 
   
