@@ -1,0 +1,59 @@
+-- Create Database
+CREATE DATABASE IF NOT EXISTS rohit_petpooja;
+USE rohit_petpooja;
+
+-- Table to store Tables (Restaurant Areas/Tables)
+CREATE TABLE tables (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    table_number INT NOT NULL UNIQUE
+);
+
+-- Table to store Menu Items
+CREATE TABLE menu_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    stock_quantity INT NOT NULL DEFAULT 0
+);
+
+-- Table to store Orders
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    table_id INT,
+    status ENUM('OPEN', 'CLOSED') DEFAULT 'OPEN',
+    total_price DECIMAL(10,2),
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (table_id) REFERENCES tables(id)
+);
+
+-- Table to store Items inside Orders
+CREATE TABLE order_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,
+    menu_item_id INT,
+    quantity INT,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (menu_item_id) REFERENCES menu_items(id)
+);
+
+-- Table to track Inventory updates
+CREATE TABLE inventory_updates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    menu_item_id INT,
+    quantity_changed INT,
+    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (menu_item_id) REFERENCES menu_items(id)
+);
+
+-- Create table_sessions
+CREATE TABLE table_sessions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    table_id INT NOT NULL,
+    opened_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    closed_time DATETIME NULL,
+    status ENUM('OPEN', 'CLOSED') DEFAULT 'OPEN'
+);
+
+-- Update orders table
+ALTER TABLE orders
+ADD COLUMN session_id INT NULL;
